@@ -1,5 +1,6 @@
 #include <Wire.h>
-
+TwoWire WIRE2(2,I2C_FAST_MODE);
+#define Wire WIRE2
 int16_t Gyro_X, Gyro_Y, Gyro_Z;
 void setup() 
 {
