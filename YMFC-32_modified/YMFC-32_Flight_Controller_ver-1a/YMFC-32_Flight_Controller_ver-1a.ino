@@ -16,7 +16,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 
 #include <Wire.h>                          //Include the Wire.h library so we can communicate with the gyro.
-HardWire HWire(2, I2C_FAST_MODE);          //Initiate I2C port 2 at 400kHz.
+TwoWire HWire(2, I2C_FAST_MODE);          //Initiate I2C port 2 at 400kHz.
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //PID gain and limit settings
@@ -39,8 +39,8 @@ int pid_max_yaw = 400;                     //Maximum output of the PID-controlle
 boolean auto_level = true;                 //Auto level on (true) or off (false).
 
 //Manual accelerometer calibration values for IMU angles:
-int16_t manual_acc_pitch_cal_value = 0;
-int16_t manual_acc_roll_cal_value = 0;
+int16_t manual_acc_pitch_cal_value = 195;
+int16_t manual_acc_roll_cal_value = 640;
 
 //Manual gyro calibration values.
 //Set the use_manual_calibration variable to true to use the manual calibration variables.
@@ -57,10 +57,10 @@ uint8_t gyro_address = 0x68;               //The I2C address of the MPU-6050 is 
 //int16_t = signed 16 bit integer
 //uint16_t = unsigned 16 bit integer
 
-uint8_t last_channel_1, last_channel_2, last_channel_3, last_channel_4;
-uint8_t highByte, lowByte, flip32, start;
+uint8_t  flip32, start;
 uint8_t error, error_counter, error_led;
 
+uint8_t channel_select_counter;
 int16_t esc_1, esc_2, esc_3, esc_4;
 int16_t throttle, cal_int;
 int16_t temperature, count_var;
@@ -74,6 +74,7 @@ int32_t channel_3_start, channel_3;
 int32_t channel_4_start, channel_4;
 int32_t channel_5_start, channel_5;
 int32_t channel_6_start, channel_6;
+int32_t measured_time, measured_time_start;
 int32_t acc_total_vector;
 int32_t gyro_roll_cal, gyro_pitch_cal, gyro_yaw_cal;
 
@@ -110,8 +111,8 @@ void setup() {
   green_led(LOW);                                               //Set output PB3 low.
   red_led(HIGH);                                                //Set output PB4 high.
 
-  //Serial.begin(57600);                                        //Set the serial output to 57600 kbps. (for debugging only)
-  //delay(250);                                                 //Give the serial port some time to start to prevent data loss.
+//  Serial.begin(57600);                                        //Set the serial output to 57600 kbps. (for debugging only)
+//  delay(250);                                                 //Give the serial port some time to start to prevent data loss.
 
   timer_setup();                                                //Setup the timers for the receiver inputs and ESC's output.
   delay(50);                                                    //Give the timers some time to start.
@@ -320,6 +321,7 @@ void loop() {
   TIMER4_BASE->CCR3 = esc_3;                                                       //Set the throttle receiver input pulse to the ESC 3 output pulse.
   TIMER4_BASE->CCR4 = esc_4;                                                       //Set the throttle receiver input pulse to the ESC 4 output pulse.
   TIMER4_BASE->CNT = 5000;                                                         //This will reset timer 4 and the ESC pulses are directly created.
+//  Serial.println(start);
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //Creating the pulses for the ESC's is explained in this video:

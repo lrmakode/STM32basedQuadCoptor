@@ -17,8 +17,8 @@
 #include <Wire.h>
 
 //Manual accelerometer calibration values for IMU angles:
-int16_t manual_acc_pitch_cal_value = 483;
-int16_t manual_acc_roll_cal_value = 590;
+int16_t manual_acc_pitch_cal_value = 195;
+int16_t manual_acc_roll_cal_value = 640;
 
 //Manual gyro calibration values.
 //Set the use_manual_calibration variable to true to use the manual calibration variables.

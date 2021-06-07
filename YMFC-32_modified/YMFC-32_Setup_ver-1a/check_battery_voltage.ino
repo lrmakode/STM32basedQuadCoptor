@@ -11,7 +11,7 @@ void check_battery_voltage(void) {
     loop_counter++;
     if (loop_counter == 250) {                                                            //Print the battery voltage every second.
       Serial.print("Voltage = ");                                                         //Print some preliminary information.
-      Serial.print(battery_voltage / 112.81, 1);                                          //Print the avarage battery voltage to the serial monitor.
+      Serial.print(battery_voltage / 111.00, 1);                                          //Print the avarage battery voltage to the serial monitor.
       Serial.println("V");                                                                //Print some trailing information.
       loop_counter = 0;                                                                   //Reset the loop counter.
     }
@@ -21,5 +21,3 @@ void check_battery_voltage(void) {
   loop_counter = 0;                                                                       //Reset the loop counter.
   print_intro();                                                                          //Print the intro to the serial monitor.
 }
-
-
